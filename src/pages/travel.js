@@ -25,149 +25,9 @@ const Travel = () => {
     }, []);
 
     useEffect(() => {
-        if(location && firstPageLoad) {
-            axios.post('https://api.entur.io/journey-planner/v3/graphql', {
-                    query: `# Avgangstavle
-
-                    {
-                        stopPlace(id: "NSR:StopPlace:3494") {
-                          id
-                          name
-                          estimatedCalls(timeRange: 72100, numberOfDepartures: 10) {     
-                            realtime
-                            aimedArrivalTime
-                            aimedDepartureTime
-                            expectedArrivalTime
-                            expectedDepartureTime
-                            actualArrivalTime
-                            actualDepartureTime
-                            date
-                            forBoarding
-                            forAlighting
-                            destinationDisplay {
-                              frontText
-                            }
-                            quay {
-                              id
-                            }
-                            serviceJourney {
-                              journeyPattern {
-                                line {
-                                  id
-                                  name
-                                  transportMode
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    `,
-                    variables: {}
-                }).then(res => {
-                    if(res.data.data.stopPlace) {
-                        setNextDepartures1(res.data.data.stopPlace);
-                    }
-                }).catch(err => {
-                    console.log(err);
-                })
-                axios.post('https://api.entur.io/journey-planner/v3/graphql', {
-                query: `# Avgangstavle
-
-                {
-                    stopPlace(id: "NSR:StopPlace:3515") {
-                      id
-                      name
-                      estimatedCalls(timeRange: 72100, numberOfDepartures: 10) {     
-                        realtime
-                        aimedArrivalTime
-                        aimedDepartureTime
-                        expectedArrivalTime
-                        expectedDepartureTime
-                        actualArrivalTime
-                        actualDepartureTime
-                        date
-                        forBoarding
-                        forAlighting
-                        destinationDisplay {
-                          frontText
-                        }
-                        quay {
-                          id
-                        }
-                        serviceJourney {
-                          journeyPattern {
-                            line {
-                              id
-                              name
-                              transportMode
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                `,
-                variables: {}
-                }).then(res => {
-                    if(res.data.data.stopPlace) {
-                        setNextDepartures2(res.data.data.stopPlace);
-                    }
-                }).catch(err => {
-                    console.log(err);
-                })
-                axios.post('https://api.entur.io/journey-planner/v3/graphql', {
-                query: `# Avgangstavle
-
-                {
-                    stopPlace(id: "NSR:StopPlace:58853") {
-                      id
-                      name
-                      estimatedCalls(timeRange: 72100, numberOfDepartures: 10) {     
-                        realtime
-                        aimedArrivalTime
-                        aimedDepartureTime
-                        expectedArrivalTime
-                        expectedDepartureTime
-                        actualArrivalTime
-                        actualDepartureTime
-                        date
-                        forBoarding
-                        forAlighting
-                        destinationDisplay {
-                          frontText
-                        }
-                        quay {
-                          id
-                        }
-                        serviceJourney {
-                          journeyPattern {
-                            line {
-                              id
-                              name
-                              transportMode
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                `,
-                variables: {}
-                }).then(res => {
-                    if(res.data.data.stopPlace) {
-                        setNextDepartures3(res.data.data.stopPlace);
-                    }
-                }).catch(err => {
-                    console.log(err);
-                })
-            setFirstPageLoad(false);
-        }
-    }, [location, firstPageLoad]);
-
-    useEffect(() => {
         if(location) {
             const getStopData = async () => {
+              if(!firstPageLoad) {
                 axios.post('https://api.entur.io/journey-planner/v3/graphql', {
                     query: `# Avgangstavle
 
@@ -213,6 +73,7 @@ const Travel = () => {
                 }).catch(err => {
                     console.log(err);
                 })
+              }
                 setTimeout(() => {
                     axios.post('https://api.entur.io/journey-planner/v3/graphql', {
                     query: `# Avgangstavle
@@ -259,7 +120,7 @@ const Travel = () => {
                     }).catch(err => {
                         console.log(err);
                     })
-                }, 10000);
+                }, firstPageLoad ? 10000 : 0);
                 setTimeout(() => {
                     axios.post('https://api.entur.io/journey-planner/v3/graphql', {
                     query: `# Avgangstavle
@@ -306,14 +167,15 @@ const Travel = () => {
                     }).catch(err => {
                         console.log(err);
                     })
-                }, 20000);
+                }, firstPageLoad ? 20000 : 0);
+                setFirstPageLoad(false);
             }
             getStopData();
             window.setInterval(() => {
                 getStopData();
             }, 30000);
         }
-    }, [location]);
+    }, [location, firstPageLoad]);
 
     useEffect(() => {
       if(canGetTime) {
@@ -351,7 +213,7 @@ const Travel = () => {
                                 <div className="travel-main-content-item-departure-list-item-name">{departure.serviceJourney.journeyPattern.line.name}</div>
                               </div>
                             )
-                          }) : null}
+                          }) : <div className="lds-ring"><div></div><div></div><div></div><div></div></div>}
                         </div>
                     </div>
                     <div className="travel-main-content-item">
@@ -372,7 +234,7 @@ const Travel = () => {
                               <div className="travel-main-content-item-departure-list-item-name">{departure.serviceJourney.journeyPattern.line.name}</div>
                             </div>
                           )
-                        }) : null}
+                        }) : <div className="lds-ring"><div></div><div></div><div></div><div></div></div>}
                       </div>
                     </div>
                     <div className="travel-main-content-item">
@@ -393,7 +255,7 @@ const Travel = () => {
                               <div className="travel-main-content-item-departure-list-item-name">{departure.serviceJourney.journeyPattern.line.name}</div>
                             </div>
                           )
-                        }) : null}
+                        }) : <div className="lds-ring"><div></div><div></div><div></div><div></div></div>}
                       </div>
                     </div>
                   </div>

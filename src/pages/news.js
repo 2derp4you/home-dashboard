@@ -25,7 +25,7 @@ const News = () => {
             <div className="news-main">
                 <div className="news-main-header">News</div>
                 <div className="news-main-content">
-                    {news && news.children[0].children.map((item, index) => {
+                    {news ? news.children[0].children.map((item, index) => {
                         if(index <= 5) {
                             return null;
                         }
@@ -36,7 +36,7 @@ const News = () => {
                                 <div className="news-main-content-item-title">{item.children[0].value}</div>
                             </a>
                         )
-                    })}
+                    }) : <div className="news-loading"><div className="lds-ring"><div></div><div></div><div></div><div></div></div></div>}
                 </div>
             </div>
         </div>
